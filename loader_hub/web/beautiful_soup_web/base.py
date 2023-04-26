@@ -31,6 +31,7 @@ def _readthedocs_reader(soup: Any, url: str, **kwargs) -> Tuple[str, Dict[str, A
 
     for link in links:
         rtd_links.append(link["href"])
+        logger.info(f"Link: {link}")
     for i in range(len(rtd_links)):
         if not rtd_links[i].startswith("http"):
             rtd_links[i] = urljoin(url, rtd_links[i])
@@ -45,6 +46,8 @@ def _readthedocs_reader(soup: Any, url: str, **kwargs) -> Tuple[str, Dict[str, A
 
         except IndexError:
             text = None
+        except AttributeError:
+            text = None  
         if text:
             texts.append("\n".join([t for t in text.split("\n") if t]))
     return "\n".join(texts), {}
@@ -84,10 +87,6 @@ def _readmedocs_reader(soup: Any, url: str, include_url_in_text: bool = True) ->
             text = None
             logger.error(f"Could not extract text from {doc_link}")
             continue
-         except AttributeError:
-            text = None
-            logger.error(f"Could not extract text from {doc_link}")
-            continue    
         texts.append("\n".join([t for t in text.split("\n") if t]))
     return "\n".join(texts), {}
 
