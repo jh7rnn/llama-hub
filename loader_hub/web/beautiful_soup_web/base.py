@@ -38,8 +38,8 @@ def _readthedocs_reader(soup: Any, url: str, **kwargs) -> Tuple[str, Dict[str, A
     texts = []
     for doc_link in rtd_links:
         page_link = requests.get(doc_link)
-        #page_link.encoding = 'utf-8'
-        soup = BeautifulSoup(page_link.text.decode('utf-8'), "html.parser")
+        page_link.encoding = 'utf-8'
+        soup = BeautifulSoup(page_link.text, "html.parser")
         try:
             text = soup.find(attrs={"role": "main"}).get_text()
 
