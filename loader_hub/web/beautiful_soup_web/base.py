@@ -64,7 +64,7 @@ def _readmedocs_reader(soup: Any, url: str, include_url_in_text: bool = True) ->
     texts = []
     for doc_link in docs_links:
         page_link = requests.get(doc_link)
-        soup = BeautifulSoup(page_link.text, "html.parser")
+        soup = BeautifulSoup(page_link.text.decode('utf-8'), "html.parser")
         try:
             text = ""
             for element in soup.find_all("article", {"id": "content"}):
@@ -83,6 +83,10 @@ def _readmedocs_reader(soup: Any, url: str, include_url_in_text: bool = True) ->
             text = None
             logger.error(f"Could not extract text from {doc_link}")
             continue
+         except AttributeError:
+            text = None
+            logger.error(f"Could not extract text from {doc_link}")
+            continue    
         texts.append("\n".join([t for t in text.split("\n") if t]))
     return "\n".join(texts), {}
 
